@@ -1,2 +1,3 @@
-public interface Drawable {
+public interface Drawable extends Position {
+    void draw();
 }
