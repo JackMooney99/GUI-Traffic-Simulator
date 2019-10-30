@@ -68,7 +68,7 @@ public abstract class Vehicle extends SimItem {
 
     /**
      *
-     * @param speed the vehcile speed
+     * @param speed the vehicle speed
      */
     public void setSpeed(double speed) {
         this.speed = speed;

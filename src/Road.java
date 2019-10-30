@@ -1,7 +1,8 @@
 /*
  * Represents a road segment
  */
-public class Road extends SimItem {
+public class Road /*extends SimItem*/ {
+    public static final int LENGTH = 100;
     /*
      * the length
      */
@@ -11,17 +12,25 @@ public class Road extends SimItem {
      */
     private Road next;
 
+    /*
+     * Default constructor
+     */
+    public Road() {
+        setLength(LENGTH);
+        setNext(null);
+    }
+
     /**
      * Constructor
      * @param length the length
      */
     public Road(double x, double y, int length) {
-        super(x, y);
+        //super(x, y);
         setLength(length);
         setNext(null);
     }
 
-    /*
+    /**
      * @return the length
      */
     public int getLength() {
@@ -29,7 +38,6 @@ public class Road extends SimItem {
     }
 
     /**
-     *
      * @param length the length
      */
     public void setLength(int length) {
