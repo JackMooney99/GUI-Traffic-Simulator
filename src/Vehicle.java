@@ -1,45 +1,51 @@
-public abstract class Vehicle extends SimItem {
+import java.util.Random;
 
-    public static final double LENGTH = 1.0;
+public abstract class Vehicle extends SimItem {
+    static final double LENGTH = 1.0;
+    private static final int SPEED = 20;
+
     private double speed;
     private Road road;
     private int roadPos;
-    private int direction;
+    private Direction direction;
 
     /**
      * Constructor
-     * @param road a road segment
-     * @param roadPos a position on the road
-     * @param speed a current speed of the vehicle
      */
-    public Vehicle(double x, double y, Road road, int roadPos, int dir, int speed) {
-        super(x, y);
-        this.speed = speed;
-        this.road = road;
-        this.roadPos = roadPos;
-        this.direction = dir;
+    public Vehicle() {
+        this.speed = 0;
+        this.road = null;
+        this.roadPos = 0;
     }
 
     public abstract double length();
 
     /**
      *
-     * @return the vehicle position
+     * @return the car position
      */
-    public int getPosition() {
+    int getPosition() {
         return roadPos;
     }
 
     /**
      *
-     * @param position the vehicle position
+     * @param position the car position
      */
-    public void setPosition(int position) {
-        if (road != null && position >= 0 && position < road.getLength()) {
+    void setPosition(int position) {
+        if (road != null && position >= 0 && position < Road.LENGTH) {
             this.roadPos = position;
         } else {
             throw new IllegalArgumentException();
         }
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    void setDirection() {
+        this.direction = Direction.RIGHT;
     }
 
     /**
@@ -54,13 +60,13 @@ public abstract class Vehicle extends SimItem {
      *
      * @param road the road segment
      */
-    public void setRoad(Road road) {
+    void setRoad(Road road) {
         this.road = road;
     }
 
     /**
      *
-     * @return the vehicle speed
+     * @return the car speed
      */
     public double getSpeed() {
         return speed;
@@ -68,36 +74,59 @@ public abstract class Vehicle extends SimItem {
 
     /**
      *
-     * @param speed the vehicle speed
+     * @param speed the car speed
      */
-    public void setSpeed(double speed) {
+    private void setSpeed(double speed) {
         this.speed = speed;
     }
 
     /**
-     * Moves the vehicle to next position on the road.
+     * Moves the car to next position on the road.
      * If current position is last position on the current road
      * then current position is set to 0.
      * If current road has next connected road segment
-     * then this function moves the vehicle to that segment.
+     * then this function moves the car to that segment.
      */
-    public void move() {
+    void move() {
         if (speed == 0) {
-            setSpeed(20);
+            setSpeed(SPEED);
         }
 
-        if (roadPos + 1 < road.getLength()) {
+        if (direction.isRightDown() && roadPos + 1 < Road.LENGTH) {
             ++roadPos;
+        } else  if (!direction.isRightDown() && roadPos > 0) {
+            --roadPos;
         } else {
-            roadPos = 0;
-            if (road.getNext() != null) {
-                road = road.getNext();
+            Road nextRoad;
+
+            if (direction == road.getDirection()) {
+                nextRoad = road.nextRoad();
+            } else {
+                Road[] nextRoads = road.getAdjacentRoads();
+                if (nextRoads.length == 0) {
+                    throw new RuntimeException("No Way");
+                } else {
+                    int r = new Random().nextInt(nextRoads.length);
+                    nextRoad = nextRoads[r];
+                }
+            }
+
+            if (nextRoad == null) {
+                throw new RuntimeException("No Way");
+            } else {
+                if (road.getDirection() != nextRoad.getDirection().opposite()) {
+                    direction = nextRoad.getDirection();
+                }
+
+                int section = direction.isRightDown() ? 0 : Road.LENGTH - 1;
+                road.removeVehicle(this);
+                nextRoad.placeVehicle(this, section);
             }
         }
     }
 
     /**
-     * Stops the vehicle
+     * Stops the car
      */
     public void stop() {
         setSpeed(0);
