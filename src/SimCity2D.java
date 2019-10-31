@@ -1,20 +1,27 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class SimCity2D extends JFrame {
-    City city;
-    CityView cityView;
+    private City city;
+    private CityView cityView;
 
     public SimCity2D() {
-        city = City.loadCity("city.txt");
+        city = City.loadCity();
+        Car car = new Car();
+        car.setDirection();
+        city.addVehicle(car);
+        Road start = city.getCityCells()[0][0].getRoad(Direction.LEFT);
+        start.placeVehicle(car, 0);
         initControls();
     }
 
-    public void run() {
+    void run() {
         int steps = 0;
         while (steps-- < 1000) {
             cityView.getCity().step();
+            cityView.repaint();
             try {
-                Thread.sleep(100);
+                Thread.sleep(75);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -24,11 +31,13 @@ public class SimCity2D extends JFrame {
     private void initControls() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Sim City 2D");
-        setBounds(400, 200, 800, 600);
+        //setBounds(400, 200, 800, 700);
 
         cityView = new CityView(city);
+        cityView.setPreferredSize(new Dimension(800, 800));
         getContentPane().add(cityView);
 
+        pack();
         setVisible(true);
     }
 }
