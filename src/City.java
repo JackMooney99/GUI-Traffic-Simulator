@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class City {
-    public static final int CITY_WIDTH = 20;
-    public static  final int CITY_HEIGHT = 20;
+    static final int CITY_WIDTH = 10;
+    static final int CITY_HEIGHT = 10;
 
     private CityCell[][] cityCells = new CityCell[CITY_HEIGHT][CITY_WIDTH];
 
@@ -21,11 +21,11 @@ public class City {
         }
     }
 
-    public CityCell[][] getCityCells() {
+    CityCell[][] getCityCells() {
         return cityCells;
     }
 
-    public void addVehicle(Vehicle v) {
+    void addVehicle(Vehicle v) {
         vehicles.add(v);
     }
 
@@ -49,7 +49,7 @@ public class City {
         return roads;
     }
 
-    public void step() {
+    void step() {
         for (Vehicle v: vehicles) {
             v.move();
         }
@@ -70,19 +70,19 @@ public class City {
             CityCell endCell = cityCells[y2][x2];
 
             if (startY % 2 == 0) {
-                startCell.setRoad(new Road(), Direction.UP);
+                startCell.setRoad(Direction.UP);
             }
-            startCell.setRoad(new Road(), Direction.DOWN);
+            startCell.setRoad(Direction.DOWN);
 
-            endCell.setRoad(new Road(), Direction.UP);
+            endCell.setRoad(Direction.UP);
             if (endY % 2 == 1) {
-                endCell.setRoad(new Road(), Direction.DOWN);
+                endCell.setRoad(Direction.DOWN);
             }
 
             for (int y = y1 + 1; y < y2; ++y) {
                 CityCell cell = cityCells[y][x1];
-                cell.setRoad(new Road(), Direction.UP);
-                cell.setRoad(new Road(), Direction.DOWN);
+                cell.setRoad(Direction.UP);
+                cell.setRoad(Direction.DOWN);
             }
 
         } else if (startY == endY) { // horizontal road
@@ -90,30 +90,29 @@ public class City {
             CityCell endCell = cityCells[y2][x2];
 
             if (startX % 2 == 0) {
-                startCell.setRoad(new Road(), Direction.LEFT);
+                startCell.setRoad(Direction.LEFT);
             }
-            startCell.setRoad(new Road(), Direction.RIGHT);
+            startCell.setRoad(Direction.RIGHT);
 
-            endCell.setRoad(new Road(), Direction.LEFT);
+            endCell.setRoad(Direction.LEFT);
             if (endX % 2 == 1) {
-                endCell.setRoad(new Road(), Direction.RIGHT);
+                endCell.setRoad(Direction.RIGHT);
             }
 
             for (int x = x1 + 1; x < x2; ++x) {
                 CityCell cell = cityCells[y1][x];
-                cell.setRoad(new Road(), Direction.LEFT);
-                cell.setRoad(new Road(), Direction.RIGHT);
+                cell.setRoad( Direction.LEFT);
+                cell.setRoad(Direction.RIGHT);
             }
-        } else {
-            // invalid road
-        }
+        }  // invalid road
+
     }
 
-    public static City loadCity(String filename) {
+    static City loadCity() {
         City city = new City();
 
         try {
-            Scanner scanner = new Scanner(new File(filename));
+            Scanner scanner = new Scanner(new File("city.txt"));
             scanner.nextLine();
             while (scanner.hasNextLine()) {
                 String roadStr = scanner.nextLine();
