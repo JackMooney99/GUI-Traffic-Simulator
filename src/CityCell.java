@@ -17,20 +17,51 @@ public class CityCell {
         }
     }
 
-    public void setRoad(Road road, Direction direction) {
+    int getX() {
+        return x;
+    }
+
+    int getY() {
+        return y;
+    }
+
+    City getCity() {
+        return city;
+    }
+
+    void setRoad(Direction direction) {
+        Road road = new Road(this, direction);
         roads[direction.ordinal()] = road;
     }
 
-    public Road getRoad(Direction direction) {
+    Road getRoad(Direction direction) {
         return roads[direction.ordinal()];
     }
 
-    public boolean hasRoads() {
+    boolean hasRoads() {
         for (int i = 0; i < NUM_ROADS; ++i) {
             if (roads[i] != null) {
                 return true;
             }
         }
         return false;
+    }
+
+    Road[] getAdjacentRoads() {
+        int num = 0;
+        for (Direction dir: Direction.values()) {
+            if (getRoad(dir) != null) {
+                ++num;
+            }
+        }
+        Road[] roads = new Road[num];
+        num = 0;
+
+        for (Direction dir: Direction.values()) {
+            if (getRoad(dir) != null) {
+                roads[num++] = getRoad(dir);
+            }
+        }
+        return roads;
     }
 }
