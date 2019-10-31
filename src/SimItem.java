@@ -1,8 +1,12 @@
 public abstract class SimItem implements Drawable {
-    private double x = 0.0;
-    private double y = 0.0;
+    private double x;
+    private double y;
 
-    public SimItem(double x, double y) {
+    SimItem() {
+        this(0, 0);
+    }
+
+    SimItem(double x, double y) {
         this.x = x;
         this.y = y;
     }
