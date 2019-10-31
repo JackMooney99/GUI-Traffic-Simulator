@@ -9,7 +9,7 @@ public class CityView extends JPanel {
         this.city = city;
     }
 
-    public City getCity() {
+    City getCity() {
         return city;
     }
 
@@ -17,50 +17,104 @@ public class CityView extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        //g.clearRect(0, 0, getWidth(), getHeight());
+        drawGrid(g);
+        drawRoads(g);
+    }
 
-        int cell_width = getWidth() / City.CITY_WIDTH;
-        int cell_height = getHeight() / City.CITY_HEIGHT;
-
-        int road_width = cell_width / 3;
-        int road_height = cell_height / 3;
-
+    private void drawGrid(Graphics g) {
+        g.setColor(Color.BLACK);
         for (int i = 0; i < City.CITY_HEIGHT; ++i) {
-            g.drawLine(0, i * cell_height, getWidth(), i * cell_height);
+            g.drawLine(0, i * cellHeight(), getWidth(), i * cellHeight());
         }
 
         for (int i = 0; i < City.CITY_WIDTH; ++i) {
-            g.drawLine(i * cell_width, 0, i * cell_width, getWidth());
+            g.drawLine(i * cellWidth(), 0, i * cellWidth(), getWidth());
         }
+    }
 
+    private void drawRoads(Graphics g) {
         for (int i = 0; i < City.CITY_HEIGHT; ++i) {
             for (int j = 0; j < City.CITY_WIDTH; ++j) {
                 CityCell cell = city.getCityCells()[i][j];
-                if (cell.hasRoads()) {
-                    int x = j * cell_width;
-                    int y = i * cell_height;
-
-                    // central square
-                    g.fillRect(x + road_width, y + road_height, road_width, road_height);
-
-                    // road squares
-                    if (cell.getRoad(Direction.LEFT) != null) {
-                        g.fillRect(x, y + road_height, road_width, road_height);
-                    }
-
-                    if (cell.getRoad(Direction.UP) != null) {
-                        g.fillRect(x + road_width, y, road_width, road_height);
-                    }
-
-                    if (cell.getRoad(Direction.RIGHT) != null) {
-                        g.fillRect(x + 2 * road_width, y + road_height, road_width, road_height);
-                    }
-
-                    if (cell.getRoad(Direction.DOWN) != null) {
-                        g.fillRect(x + road_width, y + 2 * road_height, road_width, road_height);
-                    }
-                }
+                drawCell(g, cell);
             }
         }
+    }
+
+    private void drawCell(Graphics g, CityCell cell) {
+
+        if (cell.hasRoads()) {
+            int x = cell.getX() * cellWidth();
+            int y = cell.getY() * cellHeight();
+
+            // central square
+            //g.setColor(Color.DARK_GRAY);
+            //g.fillRect(x + roadWidth(), y + roadHeight(), roadWidth(), roadHeight());
+
+            // road squares
+            if (cell.getRoad(Direction.LEFT) != null) {
+                int cx = x;
+                int cy = y + roadHeight() / 2;
+                g.setColor(Color.DARK_GRAY);
+                g.fillRect(cx, cy, roadWidth(), roadHeight());
+                drawVehicles(g, cell.getRoad(Direction.LEFT), cx, cy);
+            }
+
+            if (cell.getRoad(Direction.UP) != null) {
+                int cx = x + roadWidth() / 2;
+                int cy = y;
+                g.setColor(Color.DARK_GRAY);
+                g.fillRect(cx, cy, roadWidth(), roadHeight());
+                drawVehicles(g, cell.getRoad(Direction.UP), cx, cy);
+            }
+
+            if (cell.getRoad(Direction.RIGHT) != null) {
+                int cx = x + roadWidth();
+                int cy = y + roadHeight() / 2;
+                g.setColor(Color.DARK_GRAY);
+                g.fillRect(cx, cy, roadWidth(), roadHeight());
+                drawVehicles(g, cell.getRoad(Direction.RIGHT), cx, cy);
+            }
+
+            if (cell.getRoad(Direction.DOWN) != null) {
+                int cx = x + roadWidth() / 2;
+                int cy = y + roadHeight();
+                g.setColor(Color.DARK_GRAY);
+                g.fillRect(cx, cy , roadWidth(), roadHeight());
+                drawVehicles(g, cell.getRoad(Direction.DOWN), cx, cy);
+            }
+        }
+    }
+
+    private void drawVehicles(Graphics g, Road road, int x, int y) {
+        g.setColor(Color.GREEN);
+
+        int sectorLength = road.getDirection().isVertical() ?
+                roadWidth() / 3: roadHeight() / 3;
+
+        for (Vehicle vehicle: road.getVehicles()) {
+            if (road.getDirection().isHorizontal()) {
+
+                g.fillRect(x + vehicle.getPosition(), y, sectorLength, sectorLength);
+            } else {
+                g.fillRect(x, y + vehicle.getPosition(), sectorLength, sectorLength);
+            }
+        }
+    }
+
+    private int cellWidth() {
+        return getWidth() / City.CITY_WIDTH;
+    }
+
+    private int cellHeight() {
+        return getHeight() / City.CITY_HEIGHT;
+    }
+
+    private int roadWidth() {
+        return cellWidth() / 2;
+    }
+
+    private int roadHeight() {
+        return cellHeight() / 2;
     }
 }
