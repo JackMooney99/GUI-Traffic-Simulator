@@ -17,6 +17,12 @@ public class CityCell {
         }
     }
 
+    public CityCell(int x, int y) {
+        this.x = x;
+        this.y = y;
+        city = null;
+    }
+
     int getX() {
         return x;
     }
@@ -29,9 +35,10 @@ public class CityCell {
         return city;
     }
 
-    void setRoad(Direction direction) {
+    Road setRoad(Direction direction) {
         Road road = new Road(this, direction);
         roads[direction.ordinal()] = road;
+        return road;
     }
 
     Road getRoad(Direction direction) {
@@ -48,13 +55,14 @@ public class CityCell {
     }
 
     Road[] getAdjacentRoads() {
+        Road[] roads = null;
         int num = 0;
         for (Direction dir: Direction.values()) {
             if (getRoad(dir) != null) {
                 ++num;
             }
         }
-        Road[] roads = new Road[num];
+        roads = new Road[num];
         num = 0;
 
         for (Direction dir: Direction.values()) {
@@ -64,4 +72,11 @@ public class CityCell {
         }
         return roads;
     }
+
+    @Override
+    public String toString() {
+        return "CityCell [x=" + x + ", y=" + y + "]";
+    }
+
+
 }

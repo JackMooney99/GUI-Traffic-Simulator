@@ -2,16 +2,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class City {
+
     static final int CITY_WIDTH = 10;
-    static final int CITY_HEIGHT = 10;
+    static  final int CITY_HEIGHT = 10;
 
     private CityCell[][] cityCells = new CityCell[CITY_HEIGHT][CITY_WIDTH];
 
     private final ArrayList<Vehicle> vehicles = new ArrayList<>();
     private final ArrayList<TrafficLight> trafficLights = new ArrayList<>();
     private final ArrayList<Road> roads = new ArrayList<>();
+
+    static String lines = "";
 
     public City() {
         for (int i = 0; i < CITY_HEIGHT; ++i) {
@@ -29,7 +33,7 @@ public class City {
         vehicles.add(v);
     }
 
-    public void addTrafficLight(TrafficLight tl) {
+    void addTrafficLight(TrafficLight tl) {
         trafficLights.add(tl);
     }
 
@@ -37,11 +41,11 @@ public class City {
         roads.add(r);
     }
 
-    public ArrayList<Vehicle> getVehicles() {
+    ArrayList<Vehicle> getVehicles() {
         return vehicles;
     }
 
-    public ArrayList<TrafficLight> getTrafficLights() {
+    ArrayList<TrafficLight> getTrafficLights() {
         return trafficLights;
     }
 
@@ -64,7 +68,8 @@ public class City {
         int y1 = startY / 2;
         int x2 = endX / 2;
         int y2 = endY / 2;
-
+        addTrafficLight(new TrafficLight((x1 + x2) / 2,
+                (y1 + y2) / 2, ThreadLocalRandom.current().nextBoolean() ? "green" : "red", 0.1));
         if (startX == endX) { // vertical road
             CityCell startCell = cityCells[y1][x1];
             CityCell endCell = cityCells[y2][x2];
@@ -104,18 +109,26 @@ public class City {
                 cell.setRoad( Direction.LEFT);
                 cell.setRoad(Direction.RIGHT);
             }
-        }  // invalid road
+        }
 
     }
 
-    static City loadCity() {
+    static City loadCity(String filename) {
         City city = new City();
 
         try {
-            Scanner scanner = new Scanner(new File("city.txt"));
+            File file = new File(filename);
+
+            Scanner scanner;
+            if (file.exists()) {
+                scanner = new Scanner(file);
+            } else {
+                scanner = new Scanner(filename); // Just string for option New City.
+            }
             scanner.nextLine();
             while (scanner.hasNextLine()) {
                 String roadStr = scanner.nextLine();
+                lines += roadStr + "\r\n";
                 String[] s = roadStr.split(",");
                 if (s.length == 4) {
                     int x1 = Integer.parseInt(s[0]) - 1;
@@ -127,6 +140,7 @@ public class City {
                     city.addRoad(x1, y1, x2, y2);
                 }
             }
+            scanner.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

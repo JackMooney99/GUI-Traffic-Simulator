@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CityView extends JPanel {
+
     private final City city;
 
     public CityView(City city) {
@@ -19,6 +20,7 @@ public class CityView extends JPanel {
 
         drawGrid(g);
         drawRoads(g);
+        drawTrafficLights(g);
     }
 
     private void drawGrid(Graphics g) {
@@ -53,19 +55,17 @@ public class CityView extends JPanel {
 
             // road squares
             if (cell.getRoad(Direction.LEFT) != null) {
-                int cx = x;
                 int cy = y + roadHeight() / 2;
                 g.setColor(Color.DARK_GRAY);
-                g.fillRect(cx, cy, roadWidth(), roadHeight());
-                drawVehicles(g, cell.getRoad(Direction.LEFT), cx, cy);
+                g.fillRect(x, cy, roadWidth(), roadHeight());
+                drawVehicles(g, cell.getRoad(Direction.LEFT), x, cy);
             }
 
             if (cell.getRoad(Direction.UP) != null) {
                 int cx = x + roadWidth() / 2;
-                int cy = y;
                 g.setColor(Color.DARK_GRAY);
-                g.fillRect(cx, cy, roadWidth(), roadHeight());
-                drawVehicles(g, cell.getRoad(Direction.UP), cx, cy);
+                g.fillRect(cx, y, roadWidth(), roadHeight());
+                drawVehicles(g, cell.getRoad(Direction.UP), cx, y);
             }
 
             if (cell.getRoad(Direction.RIGHT) != null) {
@@ -83,6 +83,16 @@ public class CityView extends JPanel {
                 g.fillRect(cx, cy , roadWidth(), roadHeight());
                 drawVehicles(g, cell.getRoad(Direction.DOWN), cx, cy);
             }
+        }
+    }
+
+    private void drawTrafficLights(Graphics g) {
+        for (TrafficLight tl: city.getTrafficLights()) {
+            g.setColor(tl.getColour().equals("green") ? Color.GREEN : Color.RED);
+            g.fillRect((int)tl.getX() * cellWidth(), (int)tl.getY() * cellHeight(), 15, 15);
+            g.setColor(Color.BLACK);
+            g.fillRect((int)tl.getX() * cellWidth(),
+                    (int)tl.getY() * cellHeight() + (tl.getColour().equals("green") ? - 15 : 15), 15, 15);
         }
     }
 

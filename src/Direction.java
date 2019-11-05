@@ -1,5 +1,5 @@
-/*
- * Direction represents directions in a 2D plane. Each direction stores a relative position:
+/**
+ * Direction represents the direction within a 2D plane. Each direction stores a relative position:
  */
 public enum Direction {
     LEFT,
@@ -9,7 +9,7 @@ public enum Direction {
 
 
     /**
-     * Gets the opposite direction to this direction.
+     * Gets the inverted direction.
      */
     public Direction opposite() {
         if (this.ordinal() == 0) {

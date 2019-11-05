@@ -21,7 +21,6 @@ public abstract class Vehicle extends SimItem {
     public abstract double length();
 
     /**
-     *
      * @return the car position
      */
     int getPosition() {
@@ -29,7 +28,6 @@ public abstract class Vehicle extends SimItem {
     }
 
     /**
-     *
      * @param position the car position
      */
     void setPosition(int position) {
@@ -49,7 +47,6 @@ public abstract class Vehicle extends SimItem {
     }
 
     /**
-     *
      * @return the road segment
      */
     public Road getRoad() {
@@ -57,7 +54,6 @@ public abstract class Vehicle extends SimItem {
     }
 
     /**
-     *
      * @param road the road segment
      */
     void setRoad(Road road) {
@@ -65,7 +61,6 @@ public abstract class Vehicle extends SimItem {
     }
 
     /**
-     *
      * @return the car speed
      */
     public double getSpeed() {
@@ -73,14 +68,13 @@ public abstract class Vehicle extends SimItem {
     }
 
     /**
-     *
      * @param speed the car speed
      */
     private void setSpeed(double speed) {
         this.speed = speed;
     }
 
-    /**
+    /*
      * Moves the car to next position on the road.
      * If current position is last position on the current road
      * then current position is set to 0.
@@ -125,7 +119,7 @@ public abstract class Vehicle extends SimItem {
         }
     }
 
-    /**
+    /*
      * Stops the car
      */
     public void stop() {

@@ -36,7 +36,7 @@ public class TrafficLight extends SimItem {
         }
     }
 
-    /**
+    /*
      * If colour is "red" then set colour to "green"
      * If colour is "green" then set colour to "red"
      */
